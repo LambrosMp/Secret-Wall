@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Confession {
+  id            String         @id @default(cuid())
+  content       String
+  category      String
+  likes         Int            @default(0)
+  authorToken   String?
+  authorName    String?
+  authorAvatar  String?
+  createdAt     DateTime       @default(now())
+  
+  // Campus Polls fields
+  isPoll        Boolean        @default(false)
+  pollOptionA   String?
+  pollOptionB   String?
+  pollVotesA    Int            @default(0)
+  pollVotesB    Int            @default(0)
+  pollVotes     PollVote[]
+
+  comments      Comment[]
+  conversations Conversation[]
+
+  @@map("confessions")
+}
+
+model PollVote {
+  id             String     @id @default(cuid())
+  confessionId   String
+  confession     Confession @relation(fields: [confessionId], references: [id], onDelete: Cascade)
+  userToken      String
+  selectedOption String     // 'A' or 'B'
+  createdAt      DateTime   @default(now())
+
+  @@unique([confessionId, userToken])
+  @@map("poll_votes")
+}
+
+model Comment {
+  id           String        @id @default(cuid())
+  confessionId String
+  confession   Confession    @relation(fields: [confessionId], references: [id], onDelete: Cascade)
+  authorName   String
+  authorAvatar String
+  authorToken  String
+  content      String
+  createdAt    DateTime      @default(now())
+  
+  // Nested comments and likes
+  likesCount   Int           @default(0)
+  parentId     String?
+  parent       Comment?      @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies      Comment[]     @relation("CommentReplies")
+  likes        CommentLike[]
+
+  @@map("comments")
+}
+
+model CommentLike {
+  id        String   @id @default(cuid())
+  commentId String
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userToken String
+  createdAt DateTime @default(now())
+
+  @@unique([commentId, userToken])
+  @@map("comment_likes")
+}
+
+model Conversation {
+  id           String     @id @default(cuid())
+  confessionId String
+  confession   Confession @relation(fields: [confessionId], references: [id], onDelete: Cascade)
+  user1Token   String
+  user2Token   String
+  user1Name    String
+  user2Name    String
+  status       String     @default("ACCEPTED")
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  messages     Message[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderToken    String
+  text           String
+  createdAt      DateTime     @default(now())
+
+  @@map("messages")
+}
