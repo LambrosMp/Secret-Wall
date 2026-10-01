@@ -3,6 +3,15 @@ Markdown
 
 An elegant, pseudonymous social platform designed for university communities. Built with modern web technologies, it features a premium "Matte Obsidian" aesthetic, seamless interactions, nested discussions, and instant direct messaging.
 
+<img width="1703" height="914" alt="image" src="https://github.com/user-attachments/assets/42d65fe0-acd3-4844-b511-5d42323d77a1" />
+
+<img width="1684" height="902" alt="image" src="https://github.com/user-attachments/assets/67212ab0-a8a4-4c1f-8d0b-e4e00b3d7346" />
+
+<img width="1575" height="883" alt="image" src="https://github.com/user-attachments/assets/5fe489ba-11af-4457-9f05-01e7a15aabd9" />
+
+
+
+
 ## 🌟 Key Features
 
 * **Pseudonymous Identity System:** Ephemeral sessions using `sessionStorage`. Users pick a username upon entry; data persists on refresh but clears completely when the tab is closed.
